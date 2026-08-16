@@ -24,22 +24,27 @@ class NeuralNetwork:
             np.random.randn(self.final_neurons, self.nuerons) * 0.01
         )
 
-    def fit(self, X, y):
+    def fit(self, X, y,multi = False):
         X = np.array(X, dtype=float)
-        y = np.asarray(y).reshape(-1)      
+
+        if multi:
+            y = np.asarray(y)     
+        else:
+            y = np.asarray(y).reshape(-1)   
+
         self._init_weights(X)
         self.m = X.shape[0]
 
         for enum in range(self.n_iters):
             layers_data, z_data = self._forward(X)
             probs = self.softmax(layers_data[-1])
-            self._backward(layers_data, z_data, probs, y)
+            self._backward(layers_data, z_data, probs, y, multi=multi)
 
-            if enum % 100 == 0:
-                y_onehot = self._one_hot(y)
-                probs_clipped = np.clip(probs, 1e-15, 1 - 1e-15)
-                loss = -np.sum(y_onehot * np.log(probs_clipped)) / self.m
-                print(enum, loss)
+            #if enum % 100 == 0:
+                #y_onehot = self._one_hot(y)
+                #probs_clipped = np.clip(probs, 1e-15, 1 - 1e-15)
+                #loss = -np.sum(y_onehot * np.log(probs_clipped)) / self.m
+                #print(enum, loss)
 
         return self
     
@@ -60,8 +65,13 @@ class NeuralNetwork:
 
         return layers_data, z_data
     
-    def _backward(self,layers_data,z_data,probs,y):
-        y_onehot = self._one_hot(y)
+    def _backward(self,layers_data,z_data,probs,y,multi = False):
+
+        if multi:
+            y_onehot = self._one_hot_multi(y)
+        else:
+            y_onehot = self._one_hot(y)
+            
         probs_clipped = np.clip(probs, 1e-15, 1.0 - 1e-15)
         ce = -np.sum(y_onehot * np.log(probs_clipped)) / self.m
 
@@ -90,6 +100,16 @@ class NeuralNetwork:
         m = len(y)
         y_onehot = np.zeros((self.final_neurons, m))
         y_onehot[y, np.arange(m)] = 1
+        return y_onehot
+    
+    def _one_hot_multi(self, best_moves_all_col):
+        m = len(best_moves_all_col)
+        y_onehot = np.zeros((self.final_neurons, m))
+
+        for j, cell in enumerate(best_moves_all_col):
+            moves = [int(x) for x in str(cell).split(";")]
+            y_onehot[moves, j] = 1.0 / len(moves)  
+
         return y_onehot
     
     def softmax(self, z):

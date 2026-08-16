@@ -53,7 +53,7 @@ def get_human_move(tiles_list, player):
 def get_agent_move(tiles_list, player):
     
     model = NeuralNetwork()
-    model = model.load("models/easy.npz")
+    model = model.load("models/hard.npz")
     data = pd.DataFrame({
             "cell0": tiles_list[0], "cell1": tiles_list[1],
             "cell2": tiles_list[2], "cell3": tiles_list[3],

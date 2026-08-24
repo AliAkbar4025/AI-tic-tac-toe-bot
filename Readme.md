@@ -2,8 +2,6 @@
 
 A neural network, built from scratch with just NumPy (no PyTorch/TensorFlow), trained to play optimal tic-tac-toe. Play against it directly in your terminal.
 
-🎥 **Watch the build video:** [YOUTUBE_LINK_HERE](https://youtube.com/your-video-link)
-
 💾 **Dataset available on Kaggle:** [Kaggle Dataset](https://www.kaggle.com/datasets/syedaliakbar110/tic-tac-toe-optimal-moves-minimax-labeled/data)
 
 ## How it works
